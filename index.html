@@ -401,7 +401,7 @@
                 <!-- Dynamic Search & Filter Controls -->
                 <div class="glass-panel p-3 md:p-4 rounded-2xl space-y-3">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
-                        <!-- Search Field -->
+                        <!-- Search Field Umum -->
                         <div class="lg:col-span-2 relative">
                             <i class="fa-solid fa-magnifying-glass-chart absolute left-3.5 top-1/2 -translate-y-1/2 text-xs opacity-50"></i>
                             <input type="text" id="search-input" oninput="applyFilters()" placeholder="Cari Nama, No. DPT, NKK..." class="w-full pl-9 pr-8 py-2 rounded-xl text-xs focus:outline-none border transition-all" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
@@ -424,11 +424,13 @@
                             </select>
                         </div>
 
-                        <!-- Dropdown KK Filter -->
-                        <div>
-                            <select id="filter-no-urut-kk" onchange="applyFilters()" class="w-full px-3 py-2 rounded-xl text-xs focus:outline-none border cursor-pointer" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
-                                <option value="">Semua NO URUT KK</option>
-                            </select>
+                        <!-- Input Ketik Manual Pencarian No Urut KK -->
+                        <div class="relative">
+                            <i class="fa-solid fa-list-ol absolute left-3 top-1/2 -translate-y-1/2 text-xs opacity-50"></i>
+                            <input type="text" id="search-no-urut-kk" oninput="applyFilters()" placeholder="Pencarian No Urut KK (ex: 1, 01, 10)..." class="w-full pl-8 pr-8 py-2 rounded-xl text-xs focus:outline-none border transition-all" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                            <button onclick="clearNoUrutKkSearch()" id="clear-no-urut-kk-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </button>
                         </div>
                     </div>
 
@@ -714,9 +716,9 @@
                 rawData = [
                     { id: '1', noDpt: '001', nama: 'Budi Santoso', rtDomisili: '01', tps: '01', nkk: '320101019281001', noUrutKk: '01' },
                     { id: '2', noDpt: '002', nama: 'Siti Aminah', rtDomisili: '01', tps: '01', nkk: '320101019281001', noUrutKk: '02' },
-                    { id: '3', noDpt: '003', nama: 'Ahmad Dahlan', rtDomisili: '02', tps: '01', nkk: '320101019281002', noUrutKk: '01' },
-                    { id: '4', noDpt: '004', nama: 'Dewi Kartika', rtDomisili: '02', tps: '02', nkk: '320101019281003', noUrutKk: '01' },
-                    { id: '5', noDpt: '005', nama: 'Eko Prasetyo', rtDomisili: '03', tps: '02', nkk: '320101019281004', noUrutKk: '01' }
+                    { id: '3', noDpt: '003', nama: 'Ahmad Dahlan', rtDomisili: '02', tps: '01', nkk: '320101019281002', noUrutKk: '1' },
+                    { id: '4', noDpt: '004', nama: 'Dewi Kartika', rtDomisili: '02', tps: '02', nkk: '320101019281003', noUrutKk: '005' },
+                    { id: '5', noDpt: '005', nama: 'Eko Prasetyo', rtDomisili: '03', tps: '02', nkk: '320101019281004', noUrutKk: '12' }
                 ];
                 filteredData = [...rawData];
                 populateFilterDropdowns();
@@ -731,36 +733,49 @@
         function populateFilterDropdowns() {
             const rts = [...new Set(rawData.map(d => String(d.rtDomisili)))].sort();
             const tpss = [...new Set(rawData.map(d => String(d.tps)))].sort();
-            const noUrutKks = [...new Set(rawData.map(d => String(d.noUrutKk)))].sort();
 
             const selectRt = document.getElementById('filter-rt');
             const selectTps = document.getElementById('filter-tps');
-            const selectNoUrutKk = document.getElementById('filter-no-urut-kk');
 
             selectRt.innerHTML = '<option value="">Semua RT Domisili</option>' + rts.map(r => `<option value="${r}">RT ${r}</option>`).join('');
             selectTps.innerHTML = '<option value="">Semua TPS</option>' + tpss.map(t => `<option value="${t}">TPS ${t}</option>`).join('');
-            selectNoUrutKk.innerHTML = '<option value="">Semua NO URUT KK</option>' + noUrutKks.map(k => `<option value="${k}">NO URUT KK: ${k}</option>`).join('');
         }
 
-        // Apply Filters & Search
+        // Apply Filters & Search Manual
         function applyFilters() {
             const query = document.getElementById('search-input').value.toLowerCase().trim();
             const rt = document.getElementById('filter-rt').value;
             const tps = document.getElementById('filter-tps').value;
-            const noUrutKk = document.getElementById('filter-no-urut-kk').value;
+            const noUrutKkQuery = document.getElementById('search-no-urut-kk').value.trim();
 
             document.getElementById('clear-search-btn').classList.toggle('hidden', query === '');
+            document.getElementById('clear-no-urut-kk-btn').classList.toggle('hidden', noUrutKkQuery === '');
 
             filteredData = rawData.filter(item => {
+                // Search teks umum
                 const matchQuery = !query || 
                     String(item.nama || '').toLowerCase().includes(query) || 
                     String(item.noDpt || '').toLowerCase().includes(query) || 
-                    String(item.nkk || '').toLowerCase().includes(query) ||
-                    String(item.noUrutKk || '').toLowerCase().includes(query);
+                    String(item.nkk || '').toLowerCase().includes(query);
                 
                 const matchRt = !rt || String(item.rtDomisili) === rt;
                 const matchTps = !tps || String(item.tps) === tps;
-                const matchNoUrutKk = !noUrutKk || String(item.noUrutKk) === noUrutKk;
+
+                // Pencarian No Urut KK Manual Fleksibel (Cocok Satuan, Puluhan, Ratusan)
+                let matchNoUrutKk = true;
+                if (noUrutKkQuery !== '') {
+                    const targetStr = String(item.noUrutKk || '').trim();
+                    
+                    // 1. Pencocokan langsung berbasis teks (termasuk partial match atau leading zero)
+                    const textMatch = targetStr.toLowerCase().includes(noUrutKkQuery.toLowerCase());
+                    
+                    // 2. Pencocokan berbasis nilai numerik (Misal: ketik '1' cocok dengan '01', '001', '1')
+                    const numQuery = parseInt(noUrutKkQuery, 10);
+                    const numTarget = parseInt(targetStr, 10);
+                    const numericMatch = !isNaN(numQuery) && !isNaN(numTarget) && numQuery === numTarget;
+
+                    matchNoUrutKk = textMatch || numericMatch;
+                }
 
                 return matchQuery && matchRt && matchTps && matchNoUrutKk;
             });
@@ -774,12 +789,18 @@
             applyFilters();
         }
 
+        function clearNoUrutKkSearch() {
+            document.getElementById('search-no-urut-kk').value = '';
+            applyFilters();
+        }
+
         function resetFilters() {
             document.getElementById('search-input').value = '';
             document.getElementById('filter-rt').value = '';
             document.getElementById('filter-tps').value = '';
-            document.getElementById('filter-no-urut-kk').value = '';
+            document.getElementById('search-no-urut-kk').value = '';
             document.getElementById('clear-search-btn').classList.add('hidden');
+            document.getElementById('clear-no-urut-kk-btn').classList.add('hidden');
             filteredData = [...rawData];
             currentPage = 1;
             renderAll();
@@ -840,7 +861,7 @@
                         </td>
                         <td data-label="NKK (NO. KK)" class="p-3 font-mono text-slate-600">${item.nkk}</td>
                         <td data-label="NO. URUT KK" class="p-3">
-                            <span class="px-2 py-0.5 rounded-md font-mono text-[11px] bg-amber-50 text-amber-700 border border-amber-200">
+                            <span class="px-2 py-0.5 rounded-md font-mono text-[11px] bg-amber-50 text-amber-700 border border-amber-200 font-bold">
                                 No ${item.noUrutKk}
                             </span>
                         </td>
