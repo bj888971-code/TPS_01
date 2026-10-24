@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Warga & DPT - TPS 01</title>
+    
+    <!-- External Dependencies -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+                        cyber: ['"Space Grotesk"', 'sans-serif'],
+                    },
+                    boxShadow: {
+                        'glow-sm': '0 0 10px var(--accent-glow)',
+                        'glow-md': '0 0 20px var(--accent-glow)',
+                        'glow-lg': '0 0 35px var(--accent-glow)',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        :root {
+            --bg-main: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f1f5f9;
+            --border-color: #cbd5e1;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --accent-color: #0284c7;
+            --accent-hover: #0369a1;
+            --accent-glow: rgba(2, 132, 199, 0.2);
+            --sidebar-bg: #e0f2fe;
+            --sidebar-hover: #bae6fd;
+            --sidebar-text: #0369a1;
+            --badge-bg: rgba(2, 132, 199, 0.1);
+            --gradient-accent: linear-gradient(135deg, #0284c7 0%, #2563eb 100%);
+        }
+
+        body[data-theme="neon"] {
+            --bg-main: #faf5ff;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #f3e8ff;
+            --border-color: #e9d5ff;
+            --text-main: #3b0764;
+            --text-muted: #7e22ce;
+            --accent-color: #d946ef;
+            --accent-hover: #c026d3;
+            --accent-glow: rgba(217, 70, 239, 0.2);
+            --sidebar-bg: #fae8ff;
+            --sidebar-hover: #f5d0fe;
+            --sidebar-text: #86198f;
+            --badge-bg: rgba(217, 70, 239, 0.1);
+            --gradient-accent: linear-gradient(135deg, #d946ef 0%, #a855f7 100%);
+        }
+
+        body[data-theme="emerald"] {
+            --bg-main: #f0fdf4;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #dcfce7;
+            --border-color: #bbf7d0;
+            --text-main: #052e16;
+            --text-muted: #15803d;
+            --accent-color: #10b981;
+            --accent-hover: #059669;
+            --accent-glow: rgba(16, 185, 129, 0.2);
+            --sidebar-bg: #e0f2fe;
+            --sidebar-hover: #bae6fd;
+            --sidebar-text: #0369a1;
+            --badge-bg: rgba(16, 185, 129, 0.1);
+            --gradient-accent: linear-gradient(135deg, #10b981 0%, #0284c7 100%);
+        }
+
+        body[data-theme="sunset"] {
+            --bg-main: #fff7ed;
+            --bg-surface: #ffffff;
+            --bg-card: #ffffff;
+            --bg-card-hover: #ffedd5;
+            --border-color: #fed7aa;
+            --text-main: #431407;
+            --text-muted: #c2410c;
+            --accent-color: #ea580c;
+            --accent-hover: #c2410c;
+            --accent-glow: rgba(234, 88, 12, 0.2);
+            --sidebar-bg: #e0f2fe;
+            --sidebar-hover: #bae6fd;
+            --sidebar-text: #0369a1;
+            --badge-bg: rgba(234, 88, 12, 0.1);
+            --gradient-accent: linear-gradient(135deg, #ea580c 0%, #e11d48 100%);
+        }
+
+        body {
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            transition: background-color 0.4s ease, color 0.4s ease;
+        }
+
+        /* Glassmorphism Effect */
+        .glass-panel {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px -2px rgba(148, 163, 184, 0.15);
+        }
+
+        .glass-panel-hover:hover {
+            background-color: var(--bg-card-hover);
+            border-color: var(--accent-color);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(226, 232, 240, 0.5);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.5);
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-color);
+        }
+
+        .sidebar-item-active {
+            background: var(--gradient-accent) !important;
+            color: #ffffff !important;
+            box-shadow: 0 4px 15px var(--accent-glow);
+        }
+
+        .sidebar-panel {
+            background-color: var(--sidebar-bg) !important;
+            border-color: #bae6fd !important;
+        }
+
+        .kk-group-divider {
+            border-bottom: 2px dashed var(--accent-color) !important;
+        }
+
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: #ffffff;
+            box-shadow: 0 4px 12px var(--accent-glow);
+        }
+
+        .btn-accent:hover {
+            filter: brightness(1.08);
+            box-shadow: 0 6px 18px var(--accent-glow);
+        }
+    </style>
+</head>
+<body data-theme="cyber" class="h-full flex flex-col overflow-hidden text-sm">
+
+    <!-- API CONFIGURATION: TEMPELKAN URL WEB APP APPS SCRIPT ANDA DI SINI -->
+    <script>
+        const API_URL = "https://script.google.com/macros/s/AKfycbxq_BZveXdJgTEmXfekO7g-DjgeK0TslASvJG0c2AKkKkIzU_Z3KpOgAv00ImJPGDx9rg/exec";
+    </script>
+
+    <!-- Top Navigation Header -->
+    <header class="glass-panel sticky top-0 z-40 px-4 py-3 flex items-center justify-between border-b">
+        <div class="flex items-center space-x-3">
+            <button onclick="toggleSidebar()" class="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-600 focus:outline-none" title="Toggle Sidebar">
+                <i class="fa-solid fa-atom text-xl" style="color: var(--accent-color);"></i>
+            </button>
+            <div class="flex items-center space-x-3">
+                <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white shadow-glow-sm" style="background: var(--gradient-accent);">
+                    <i class="fa-solid fa-microchip text-sm"></i>
+                </div>
+                <div>
+                    <h1 class="font-cyber font-bold tracking-wide text-base leading-tight">Data <span style="color: var(--accent-color);">TPS 01</span></h1>
+                    <p class="text-[10px] tracking-wider uppercase opacity-80 font-semibold" style="color: var(--text-muted);">Manajemen Data Pemilih DPT</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Header Controls -->
+        <div class="flex items-center space-x-3">
+            <!-- Theme Dropdown -->
+            <div class="relative">
+                <select id="theme-selector" onchange="changeTheme(this.value)" class="px-3 py-1.5 rounded-xl text-xs font-semibold focus:outline-none cursor-pointer transition-all border appearance-none pr-8 shadow-sm" style="background-color: var(--bg-surface); color: var(--text-main); border-color: var(--border-color);">
+                    <option value="cyber">☀️ White Quantum</option>
+                    <option value="neon">⚡ Neon Light</option>
+                    <option value="emerald">🌿 Mint Breeze</option>
+                    <option value="sunset">🌅 Warm Sunset</option>
+                </select>
+                <i class="fa-solid fa-chevron-down text-[10px] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-60"></i>
+            </div>
+
+            <!-- Online Sync Status Indicator -->
+            <div class="flex items-center space-x-2 px-3 py-1.5 rounded-xl text-xs font-medium border shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                <span class="relative flex h-2 w-2">
+                    <span id="sync-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background-color: var(--accent-color);"></span>
+                    <span id="sync-dot" class="relative inline-flex rounded-full h-2 w-2" style="background-color: var(--accent-color);"></span>
+                </span>
+                <span class="hidden sm:inline text-slate-500 font-medium">Status:</span>
+                <span id="sync-status" class="font-cyber font-bold tracking-wider text-[11px]" style="color: var(--accent-color);">ONLINE</span>
+            </div>
+        </div>
+    </header>
+
+    <!-- Mobile Drawer Backdrop -->
+    <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
+
+    <!-- Main Container -->
+    <div class="flex flex-1 h-[calc(100vh-61px)] overflow-hidden">
+        
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="sidebar-panel w-64 flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out absolute md:relative inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 border-r">
+            <div class="p-4 flex items-center justify-between border-b border-sky-200">
+                <span class="text-xs font-cyber tracking-widest uppercase font-bold text-sky-800 flex items-center gap-2">
+                    <i class="fa-solid fa-[#0284c7] fa-compass-drafting text-xs" style="color: var(--accent-color);"></i> Core Matrix
+                </span>
+                <button onclick="toggleSidebar()" class="md:hidden p-1 text-sky-700 hover:text-sky-900">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <nav class="flex-1 p-3 space-y-2 overflow-y-auto">
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="sidebar-item-active w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-semibold text-sm">
+                    <i class="fa-solid fa-satellite-dish w-5 text-center"></i>
+                    <span>Dashboard & DPT</span>
+                </button>
+
+                <button onclick="switchTab('analytics')" id="nav-analytics" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-semibold text-sm hover:bg-sky-200/70 text-sky-900">
+                    <i class="fa-solid fa-chart-network w-5 text-center"></i>
+                    <span>Visual Analytics</span>
+                </button>
+
+                <button onclick="switchTab('rekap-tps')" id="nav-rekap-tps" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-semibold text-sm hover:bg-sky-200/70 text-sky-900">
+                    <i class="fa-solid fa-box-tissue w-5 text-center"></i>
+                    <span>Rekapitulasi TPS</span>
+                </button>
+
+                <button onclick="switchTab('rekap-rt')" id="nav-rekap-rt" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all font-semibold text-sm hover:bg-sky-200/70 text-sky-900">
+                    <i class="fa-solid fa-globe-pointer w-5 text-center"></i>
+                    <span>Wilayah & RT</span>
+                </button>
+            </nav>
+
+            <div class="p-4 border-t border-sky-200 text-[11px] text-center font-cyber text-sky-800">
+                <div class="flex items-center justify-center space-x-1 mb-1">
+                    <i class="fa-solid fa-shield-halo" style="color: var(--accent-color);"></i>
+                    <span class="font-bold">VERSI 2.5 MATRIX</span>
+                </div>
+                <span>Quantum Data Security</span>
+            </div>
+        </aside>
+
+        <!-- Main Body Workspace -->
+        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+            
+            <!-- TAB 1: DASHBOARD & DPT DATA -->
+            <div id="tab-dashboard" class="space-y-6">
+                
+                <!-- Action Header Bar -->
+                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl md:text-3xl font-extrabold font-cyber tracking-tight">Dashboard Data Warga & DPT</h2>
+                        <p class="text-xs md:text-sm mt-0.5" style="color: var(--text-muted);">Manajemen terintegrasi DPT, pemetaan RT, TPS, serta grouping KK.</p>
+                    </div>
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button onclick="exportToCSV()" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all border hover:bg-slate-100 shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                            <i class="fa-solid fa-file-export text-emerald-600"></i>
+                            <span>Export CSV</span>
+                        </button>
+                        <button onclick="fetchDataFromSheet()" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all border hover:bg-slate-100 shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                            <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i>
+                            <span>Refresh</span>
+                        </button>
+                        <button onclick="openModal()" class="btn-accent px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-2 transition-all">
+                            <i class="fa-solid fa-user-gear"></i>
+                            <span>Tambah Warga</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Strategic Summary KPI Cards -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                    <!-- KPI 1 -->
+                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Total Pemilih DPT</span>
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background-color: var(--badge-bg); color: var(--accent-color);">
+                                <i class="fa-solid fa-users-rays"></i>
+                            </div>
+                        </div>
+                        <div id="kpi-total" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight">0</div>
+                        <p class="text-[10px] mt-1 text-slate-500"><span id="kpi-total-sub" class="text-emerald-600 font-bold">100%</span> terdaftar di sistem</p>
+                    </div>
+
+                    <!-- KPI 2 -->
+                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Total RT Domisili</span>
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs bg-cyan-500/10 text-cyan-600">
+                                <i class="fa-solid fa-city"></i>
+                            </div>
+                        </div>
+                        <div id="kpi-rt" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight text-cyan-600">0</div>
+                        <p class="text-[10px] mt-1 text-slate-500">Cakupan Wilayah</p>
+                    </div>
+
+                    <!-- KPI 3 -->
+                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Jumlah TPS Active</span>
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs bg-emerald-500/10 text-emerald-600">
+                                <i class="fa-solid fa-cubes-stacked"></i>
+                            </div>
+                        </div>
+                        <div id="kpi-tps" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight text-emerald-600">0</div>
+                        <p class="text-[10px] mt-1 text-slate-500">Titik Pencoblosan</p>
+                    </div>
+
+                    <!-- KPI 4 -->
+                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                        <div class="flex items-center justify-between">
+                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Kepala Keluarga (NKK)</span>
+                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs bg-amber-500/10 text-amber-600">
+                                <i class="fa-solid fa-id-card-clip"></i>
+                            </div>
+                        </div>
+                        <div id="kpi-kk" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight text-amber-600">0</div>
+                        <p class="text-[10px] mt-1 text-slate-500">Kartu Keluarga Unik</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic Search & Filter Controls -->
+                <div class="glass-panel p-4 rounded-2xl space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                        <!-- Search Field -->
+                        <div class="lg:col-span-2 relative">
+                            <i class="fa-solid fa-magnifying-glass-chart absolute left-3.5 top-1/2 -translate-y-1/2 text-xs opacity-50"></i>
+                            <input type="text" id="search-input" oninput="applyFilters()" placeholder="Cari Nama, No. DPT, NKK..." class="w-full pl-9 pr-8 py-2 rounded-xl text-xs focus:outline-none border transition-all" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                            <button onclick="clearSearch()" id="clear-search-btn" class="hidden absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+                                <i class="fa-solid fa-circle-xmark"></i>
+                            </button>
+                        </div>
+
+                        <!-- Dropdown RT Filter -->
+                        <div>
+                            <select id="filter-rt" onchange="applyFilters()" class="w-full px-3 py-2 rounded-xl text-xs focus:outline-none border cursor-pointer" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                                <option value="">Semua RT Domisili</option>
+                            </select>
+                        </div>
+
+                        <!-- Dropdown TPS Filter -->
+                        <div>
+                            <select id="filter-tps" onchange="applyFilters()" class="w-full px-3 py-2 rounded-xl text-xs focus:outline-none border cursor-pointer" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                                <option value="">Semua TPS</option>
+                            </select>
+                        </div>
+
+                        <!-- Dropdown KK Filter -->
+                        <div>
+                            <select id="filter-no-urut-kk" onchange="applyFilters()" class="w-full px-3 py-2 rounded-xl text-xs focus:outline-none border cursor-pointer" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                                <option value="">Semua NO URUT KK</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Reset & Active Filter Banner -->
+                    <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-200">
+                        <span class="text-slate-500 font-medium text-[11px]" id="filter-info-count">Menampilkan 0 data</span>
+                        <button onclick="resetFilters()" class="font-bold transition-colors hover:underline text-[11px] flex items-center space-x-1" style="color: var(--accent-color);">
+                            <i class="fa-solid fa-[#0284c7] fa-filter-circle-xmark"></i>
+                            <span>Reset All Filters</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Primary Data Table -->
+                <div class="glass-panel rounded-2xl overflow-hidden border">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left text-xs">
+                            <thead class="uppercase text-[10px] font-cyber tracking-wider border-b bg-slate-50 border-slate-200" style="color: var(--text-muted);">
+                                <tr>
+                                    <th class="p-3.5">NO. DPT</th>
+                                    <th class="p-3.5">NAMA PEMILIH</th>
+                                    <th class="p-3.5">RT DOMISILI</th>
+                                    <th class="p-3.5">TPS</th>
+                                    <th class="p-3.5">NKK (NO. KK)</th>
+                                    <th class="p-3.5">NO. URUT KK</th>
+                                    <th class="p-3.5 text-center">AKSI</th>
+                                </tr>
+                            </thead>
+                            <tbody id="table-body" class="divide-y divide-slate-200">
+                                <!-- Table Rows Populated Dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Table Pagination Footer -->
+                    <div class="px-4 py-3 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+                        <div class="flex items-center space-x-2">
+                            <span class="text-slate-500 text-[11px] font-medium">Baris per halaman:</span>
+                            <select id="rows-per-page" onchange="changePageSize(this.value)" class="px-2 py-1 rounded-lg text-xs focus:outline-none border border-slate-300" style="background-color: var(--bg-main);">
+                                <option value="10">10</option>
+                                <option value="25" selected>25</option>
+                                <option value="50">50</option>
+                                <option value="100">100</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center space-x-3">
+                            <span id="pagination-info" class="text-slate-500 text-[11px] font-medium">Halaman 1 dari 1</span>
+                            <div class="inline-flex space-x-1">
+                                <button onclick="prevPage()" id="btn-prev-page" class="px-2.5 py-1 rounded-lg border border-slate-300 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed">
+                                    <i class="fa-solid fa-chevron-left text-[10px]"></i>
+                                </button>
+                                <button onclick="nextPage()" id="btn-next-page" class="px-2.5 py-1 rounded-lg border border-slate-300 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed">
+                                    <i class="fa-solid fa-chevron-right text-[10px]"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 2: VISUAL ANALYTICS -->
+            <div id="tab-analytics" class="space-y-6 hidden">
+                <h2 class="text-2xl md:text-3xl font-bold font-cyber">Visual Analytics Data DPT</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="glass-panel p-5 rounded-2xl border space-y-4">
+                        <h3 class="font-cyber font-semibold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-chart-simple" style="color: var(--accent-color);"></i>
+                            Distribusi Pemilih per RT Domisili
+                        </h3>
+                        <div class="h-64 relative">
+                            <canvas id="chart-rt"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="glass-panel p-5 rounded-2xl border space-y-4">
+                        <h3 class="font-cyber font-semibold text-sm flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie-simple" style="color: var(--accent-color);"></i>
+                            Sebaran Pemilih per TPS
+                        </h3>
+                        <div class="h-64 relative">
+                            <canvas id="chart-tps"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: REKAPITULASI TPS -->
+            <div id="tab-rekap-tps" class="space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl md:text-3xl font-bold font-cyber">Rekapitulasi TPS</h2>
+                    <span class="text-xs px-3 py-1 rounded-full border border-sky-300 bg-sky-50 text-sky-700 font-semibold">Grouping TPS</span>
+                </div>
+                
+                <div class="glass-panel rounded-2xl shadow-sm overflow-hidden border">
+                    <table class="w-full text-left text-xs">
+                        <thead class="uppercase text-[10px] font-cyber tracking-wider border-b bg-slate-50 border-slate-200" style="color: var(--text-muted);">
+                            <tr>
+                                <th class="p-4">TPS</th>
+                                <th class="p-4">JUMLAH PEMILIH DPT</th>
+                                <th class="p-4">JUMLAH NO. URUT KK UNIK</th>
+                                <th class="p-4">CAKUPAN RT TERLIBAT</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-rekap-tps-body" class="divide-y divide-slate-200">
+                            <!-- Dynamic Rekap TPS Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- TAB 4: WILAYAH & REKAP RT -->
+            <div id="tab-rekap-rt" class="space-y-6 hidden">
+                <div class="flex justify-between items-center">
+                    <h2 class="text-2xl md:text-3xl font-bold font-cyber">Rekapitulasi Wilayah RT</h2>
+                    <span class="text-xs px-3 py-1 rounded-full border border-sky-300 bg-sky-50 text-sky-700 font-semibold">Grouping RT</span>
+                </div>
+
+                <div class="glass-panel rounded-2xl shadow-sm overflow-hidden border">
+                    <table class="w-full text-left text-xs">
+                        <thead class="uppercase text-[10px] font-cyber tracking-wider border-b bg-slate-50 border-slate-200" style="color: var(--text-muted);">
+                            <tr>
+                                <th class="p-4">RT DOMISILI</th>
+                                <th class="p-4">JUMLAH PEMILIH DPT</th>
+                                <th class="p-4">JUMLAH NO. URUT KK UNIK</th>
+                            </tr>
+                        </thead>
+                        <tbody id="table-rekap-rt-body" class="divide-y divide-slate-200">
+                            <!-- Dynamic Rekap RT Rows -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal Form Editor Warga -->
+    <div id="modal-form" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 transition-opacity">
+        <div class="glass-panel rounded-2xl w-full max-w-md p-6 space-y-4 border shadow-2xl relative" style="background-color: var(--bg-surface);">
+            <div class="flex items-center justify-between border-b border-slate-200 pb-3">
+                <h3 id="modal-title" class="text-base font-bold font-cyber flex items-center gap-2">
+                    <i class="fa-solid fa-user-pen text-sm" style="color: var(--accent-color);"></i>
+                    <span>Tambah Data Warga</span>
+                </h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <form id="warga-form" onsubmit="saveData(event)" class="space-y-3.5">
+                <input type="hidden" id="field-id">
+                
+                <div>
+                    <label class="text-[10px] font-cyber uppercase tracking-wider block mb-1 font-semibold" style="color: var(--text-muted);">NO. DPT</label>
+                    <input type="text" id="field-noDpt" required placeholder="Contoh: 001" class="w-full p-2.5 rounded-xl text-xs focus:outline-none border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                </div>
+
+                <div>
+                    <label class="text-[10px] font-cyber uppercase tracking-wider block mb-1 font-semibold" style="color: var(--text-muted);">NAMA LENGKAP</label>
+                    <input type="text" id="field-nama" required placeholder="Masukkan Nama Lengkap" class="w-full p-2.5 rounded-xl text-xs focus:outline-none border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-cyber uppercase tracking-wider block mb-1 font-semibold" style="color: var(--text-muted);">RT DOMISILI</label>
+                        <input type="text" id="field-rtDomisili" required placeholder="01" class="w-full p-2.5 rounded-xl text-xs focus:outline-none border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-cyber uppercase tracking-wider block mb-1 font-semibold" style="color: var(--text-muted);">TPS</label>
+                        <input type="text" id="field-tps" required placeholder="01" class="w-full p-2.5 rounded-xl text-xs focus:outline-none border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-[10px] font-cyber uppercase tracking-wider block mb-1 font-semibold" style="color: var(--text-muted);">NKK (NO. KK)</label>
+                        <input type="text" id="field-nkk" required placeholder="3201..." class="w-full p-2.5 rounded-xl text-xs focus:outline-none border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                    <div>
+                        <label class="text-[10px] font-cyber uppercase tracking-wider block mb-1 font-semibold" style="color: var(--text-muted);">NO URUT KK</label>
+                        <input type="text" id="field-noUrutKk" required placeholder="01" class="w-full p-2.5 rounded-xl text-xs focus:outline-none border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                </div>
+
+                <div class="flex justify-end space-x-2 pt-3 border-t border-slate-200">
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 hover:bg-slate-100 transition-all" style="color: var(--text-muted);">Batal</button>
+                    <button type="submit" id="btn-submit" class="btn-accent px-5 py-2 rounded-xl text-xs font-bold transition-all">Simpan Data</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Custom Modal Confirm Alert Dialog -->
+    <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
+        <div class="glass-panel rounded-2xl w-full max-w-sm p-6 space-y-4 border text-center shadow-2xl" style="background-color: var(--bg-surface);">
+            <div id="custom-modal-icon" class="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl bg-amber-500/10 text-amber-600">
+                <i class="fa-solid fa-triangle-exclamation"></i>
+            </div>
+            <h4 id="custom-modal-title" class="font-cyber font-bold text-base">Informasi</h4>
+            <p id="custom-modal-message" class="text-xs text-slate-600">Pesan sistem...</p>
+            <div id="custom-modal-actions" class="flex justify-center space-x-2 pt-2">
+                <button onclick="closeCustomModal()" class="btn-accent px-5 py-2 rounded-xl text-xs font-bold">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Application Script -->
+    <script>
+        let rawData = [];
+        let filteredData = [];
+        let currentPage = 1;
+        let pageSize = 25;
+
+        // Chart instances
+        let chartRtInstance = null;
+        let chartTpsInstance = null;
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDataFromSheet();
+        });
+
+        // Toggle Sidebar Drawer
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const backdrop = document.getElementById('sidebar-backdrop');
+            sidebar.classList.toggle('-translate-x-full');
+            backdrop.classList.toggle('hidden');
+        }
+
+        // Change App Theme
+        function changeTheme(themeName) {
+            document.body.setAttribute('data-theme', themeName);
+            if (chartRtInstance && chartTpsInstance) {
+                renderCharts();
+            }
+        }
+
+        // Set Sync Status UI
+        function setStatus(text, type = 'online') {
+            const statusEl = document.getElementById('sync-status');
+            const syncDot = document.getElementById('sync-dot');
+            const syncPing = document.getElementById('sync-ping');
+
+            statusEl.innerText = text;
+
+            if (type === 'online') {
+                statusEl.style.color = 'var(--accent-color)';
+                syncDot.style.backgroundColor = 'var(--accent-color)';
+                syncPing.style.backgroundColor = 'var(--accent-color)';
+            } else if (type === 'syncing') {
+                statusEl.style.color = '#f59e0b';
+                syncDot.style.backgroundColor = '#f59e0b';
+                syncPing.style.backgroundColor = '#f59e0b';
+            } else {
+                statusEl.style.color = '#ef4444';
+                syncDot.style.backgroundColor = '#ef4444';
+                syncPing.style.backgroundColor = '#ef4444';
+            }
+        }
+
+        // Fetch Data from Google Sheets API
+        async function fetchDataFromSheet() {
+            const refreshBtn = document.getElementById('refresh-icon');
+            if (refreshBtn) refreshBtn.classList.add('fa-spin');
+            setStatus('MEMUAT...', 'syncing');
+
+            try {
+                const response = await fetch(API_URL);
+                const result = await response.json();
+                if (result.status === 'success') {
+                    rawData = result.data;
+                    filteredData = [...rawData];
+                    populateFilterDropdowns();
+                    renderAll();
+                    setStatus('ONLINE', 'online');
+                } else {
+                    showCustomAlert('Gagal Fetch', 'Status respon gagal: ' + result.message);
+                    setStatus('ERROR', 'error');
+                }
+            } catch (err) {
+                console.warn('Menggunakan data sampel fallback (offline mode/API error):', err);
+                rawData = [
+                    { id: '1', noDpt: '001', nama: 'Budi Santoso', rtDomisili: '01', tps: '01', nkk: '320101019281001', noUrutKk: '01' },
+                    { id: '2', noDpt: '002', nama: 'Siti Aminah', rtDomisili: '01', tps: '01', nkk: '320101019281001', noUrutKk: '02' },
+                    { id: '3', noDpt: '003', nama: 'Ahmad Dahlan', rtDomisili: '02', tps: '01', nkk: '320101019281002', noUrutKk: '01' },
+                    { id: '4', noDpt: '004', nama: 'Dewi Kartika', rtDomisili: '02', tps: '02', nkk: '320101019281003', noUrutKk: '01' },
+                    { id: '5', noDpt: '005', nama: 'Eko Prasetyo', rtDomisili: '03', tps: '02', nkk: '320101019281004', noUrutKk: '01' }
+                ];
+                filteredData = [...rawData];
+                populateFilterDropdowns();
+                renderAll();
+                setStatus('DEMO MODE', 'syncing');
+            } finally {
+                if (refreshBtn) refreshBtn.classList.remove('fa-spin');
+            }
+        }
+
+        // Populate Dropdowns
+        function populateFilterDropdowns() {
+            const rts = [...new Set(rawData.map(d => String(d.rtDomisili)))].sort();
+            const tpss = [...new Set(rawData.map(d => String(d.tps)))].sort();
+            const noUrutKks = [...new Set(rawData.map(d => String(d.noUrutKk)))].sort();
+
+            const selectRt = document.getElementById('filter-rt');
+            const selectTps = document.getElementById('filter-tps');
+            const selectNoUrutKk = document.getElementById('filter-no-urut-kk');
+
+            selectRt.innerHTML = '<option value="">Semua RT Domisili</option>' + rts.map(r => `<option value="${r}">RT ${r}</option>`).join('');
+            selectTps.innerHTML = '<option value="">Semua TPS</option>' + tpss.map(t => `<option value="${t}">TPS ${t}</option>`).join('');
+            selectNoUrutKk.innerHTML = '<option value="">Semua NO URUT KK</option>' + noUrutKks.map(k => `<option value="${k}">NO URUT KK: ${k}</option>`).join('');
+        }
+
+        // Apply Filters & Search
+        function applyFilters() {
+            const query = document.getElementById('search-input').value.toLowerCase().trim();
+            const rt = document.getElementById('filter-rt').value;
+            const tps = document.getElementById('filter-tps').value;
+            const noUrutKk = document.getElementById('filter-no-urut-kk').value;
+
+            document.getElementById('clear-search-btn').classList.toggle('hidden', query === '');
+
+            filteredData = rawData.filter(item => {
+                const matchQuery = !query || 
+                    String(item.nama || '').toLowerCase().includes(query) || 
+                    String(item.noDpt || '').toLowerCase().includes(query) || 
+                    String(item.nkk || '').toLowerCase().includes(query) ||
+                    String(item.noUrutKk || '').toLowerCase().includes(query);
+                
+                const matchRt = !rt || String(item.rtDomisili) === rt;
+                const matchTps = !tps || String(item.tps) === tps;
+                const matchNoUrutKk = !noUrutKk || String(item.noUrutKk) === noUrutKk;
+
+                return matchQuery && matchRt && matchTps && matchNoUrutKk;
+            });
+
+            currentPage = 1;
+            renderAll();
+        }
+
+        function clearSearch() {
+            document.getElementById('search-input').value = '';
+            applyFilters();
+        }
+
+        function resetFilters() {
+            document.getElementById('search-input').value = '';
+            document.getElementById('filter-rt').value = '';
+            document.getElementById('filter-tps').value = '';
+            document.getElementById('filter-no-urut-kk').value = '';
+            document.getElementById('clear-search-btn').classList.add('hidden');
+            filteredData = [...rawData];
+            currentPage = 1;
+            renderAll();
+        }
+
+        function renderAll() {
+            renderTable();
+            renderKPI();
+            renderRekapTPS();
+            renderRekapRT();
+            renderCharts();
+        }
+
+        // Render Table Data with Grouping & Pagination
+        function renderTable() {
+            const tbody = document.getElementById('table-body');
+            const totalRecords = filteredData.length;
+
+            document.getElementById('filter-info-count').innerText = `Menampilkan ${totalRecords} dari total ${rawData.length} DPT`;
+
+            if (totalRecords === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="p-8 text-center text-slate-400">
+                            <i class="fa-solid fa-box-open text-2xl mb-2 block opacity-40"></i>
+                            Tidak ada data DPT yang cocok dengan kriteria pencarian/filter.
+                        </td>
+                    </tr>
+                `;
+                updatePaginationUI(0, 0, 0);
+                return;
+            }
+
+            const totalPages = Math.ceil(totalRecords / pageSize);
+            if (currentPage > totalPages) currentPage = totalPages;
+
+            const startIndex = (currentPage - 1) * pageSize;
+            const pageData = filteredData.slice(startIndex, startIndex + pageSize);
+
+            tbody.innerHTML = pageData.map((item, idx) => {
+                const globalIndex = startIndex + idx;
+                const isGroupEnd = globalIndex < filteredData.length - 1 && filteredData[globalIndex + 1].nkk !== item.nkk;
+                const borderClass = isGroupEnd ? 'kk-group-divider' : '';
+
+                return `
+                    <tr class="${borderClass} transition-colors hover:bg-slate-100/60">
+                        <td class="p-3.5 font-bold font-cyber" style="color: var(--accent-color);">${item.noDpt}</td>
+                        <td class="p-3.5 font-semibold text-slate-800">${item.nama}</td>
+                        <td class="p-3.5">
+                            <span class="px-2 py-0.5 rounded-md font-mono text-[11px] border border-slate-200 bg-slate-100 text-slate-700">
+                                RT ${item.rtDomisili}
+                            </span>
+                        </td>
+                        <td class="p-3.5">
+                            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase border bg-emerald-50 text-emerald-700 border-emerald-200">
+                                TPS ${item.tps}
+                            </span>
+                        </td>
+                        <td class="p-3.5 font-mono text-slate-600">${item.nkk}</td>
+                        <td class="p-3.5">
+                            <span class="px-2 py-0.5 rounded-md font-mono text-[11px] bg-amber-50 text-amber-700 border border-amber-200">
+                                No ${item.noUrutKk}
+                            </span>
+                        </td>
+                        <td class="p-3.5 text-center space-x-2">
+                            <button onclick="editWarga('${item.id}')" class="p-1.5 rounded-lg hover:bg-sky-100 text-sky-600 transition-colors" title="Edit Data">
+                                <i class="fa-solid fa-pen-nib"></i>
+                            </button>
+                            <button onclick="deleteWarga('${item.id}')" class="p-1.5 rounded-lg hover:bg-red-100 text-red-600 transition-colors" title="Hapus Data">
+                                <i class="fa-solid fa-trash-can"></i>
+                            </button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            updatePaginationUI(currentPage, totalPages, totalRecords);
+        }
+
+        // Pagination Logic Controls
+        function updatePaginationUI(page, totalPages, totalRecords) {
+            document.getElementById('pagination-info').innerText = totalRecords === 0 
+                ? 'Tidak ada data' 
+                : `Halaman ${page} dari ${totalPages} (${totalRecords} baris)`;
+
+            document.getElementById('btn-prev-page').disabled = page <= 1;
+            document.getElementById('btn-next-page').disabled = page >= totalPages || totalPages === 0;
+        }
+
+        function nextPage() {
+            const totalPages = Math.ceil(filteredData.length / pageSize);
+            if (currentPage < totalPages) {
+                currentPage++;
+                renderTable();
+            }
+        }
+
+        function prevPage() {
+            if (currentPage > 1) {
+                currentPage--;
+                renderTable();
+            }
+        }
+
+        function changePageSize(val) {
+            pageSize = parseInt(val);
+            currentPage = 1;
+            renderTable();
+        }
+
+        // Render Summary Stats
+        function renderKPI() {
+            document.getElementById('kpi-total').innerText = filteredData.length;
+            document.getElementById('kpi-rt').innerText = new Set(filteredData.map(d => d.rtDomisili)).size;
+            document.getElementById('kpi-tps').innerText = new Set(filteredData.map(d => d.tps)).size;
+            document.getElementById('kpi-kk').innerText = new Set(filteredData.map(d => d.nkk)).size;
+        }
+
+        // Render Rekap TPS Table
+        function renderRekapTPS() {
+            const tpsMap = {};
+            filteredData.forEach(d => {
+                if (!tpsMap[d.tps]) tpsMap[d.tps] = { total: 0, kks: new Set(), rts: new Set() };
+                tpsMap[d.tps].total++;
+                tpsMap[d.tps].kks.add(d.noUrutKk);
+                tpsMap[d.tps].rts.add(d.rtDomisili);
+            });
+
+            const tbody = document.getElementById('table-rekap-tps-body');
+            tbody.innerHTML = Object.keys(tpsMap).sort().map(tps => `
+                <tr class="transition-colors hover:bg-slate-100/60">
+                    <td class="p-4 font-bold font-cyber text-emerald-600">TPS ${tps}</td>
+                    <td class="p-4 font-semibold text-slate-800">${tpsMap[tps].total} Pemilih</td>
+                    <td class="p-4">${tpsMap[tps].kks.size} NO URUT KK Unik</td>
+                    <td class="p-4 text-slate-600">${Array.from(tpsMap[tps].rts).map(r => `RT ${r}`).join(', ')}</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Rekap RT Table
+        function renderRekapRT() {
+            const rtMap = {};
+            filteredData.forEach(d => {
+                if (!rtMap[d.rtDomisili]) rtMap[d.rtDomisili] = { total: 0, kks: new Set() };
+                rtMap[d.rtDomisili].total++;
+                rtMap[d.rtDomisili].kks.add(d.noUrutKk);
+            });
+
+            const tbody = document.getElementById('table-rekap-rt-body');
+            tbody.innerHTML = Object.keys(rtMap).sort().map(rt => `
+                <tr class="transition-colors hover:bg-slate-100/60">
+                    <td class="p-4 font-bold font-cyber text-cyan-600">RT ${rt}</td>
+                    <td class="p-4 font-semibold text-slate-800">${rtMap[rt].total} Pemilih</td>
+                    <td class="p-4">${rtMap[rt].kks.size} NO URUT KK Unik</td>
+                </tr>
+            `).join('');
+        }
+
+        // Render Visual Analytics (Chart.js)
+        function renderCharts() {
+            const rtCounts = {};
+            const tpsCounts = {};
+
+            filteredData.forEach(d => {
+                rtCounts[`RT ${d.rtDomisili}`] = (rtCounts[`RT ${d.rtDomisili}`] || 0) + 1;
+                tpsCounts[`TPS ${d.tps}`] = (tpsCounts[`TPS ${d.tps}`] || 0) + 1;
+            });
+
+            const accentColor = getComputedStyle(document.body).getPropertyValue('--accent-color').trim() || '#0284c7';
+
+            // Chart RT Bar
+            const ctxRt = document.getElementById('chart-rt').getContext('2d');
+            if (chartRtInstance) chartRtInstance.destroy();
+            chartRtInstance = new Chart(ctxRt, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(rtCounts),
+                    datasets: [{
+                        label: 'Pemilih',
+                        data: Object.values(rtCounts),
+                        backgroundColor: accentColor,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { ticks: { color: '#64748b' }, grid: { display: false } },
+                        y: { ticks: { color: '#64748b' }, grid: { color: 'rgba(203, 213, 225, 0.4)' } }
+                    }
+                }
+            });
+
+            // Chart TPS Pie
+            const ctxTps = document.getElementById('chart-tps').getContext('2d');
+            if (chartTpsInstance) chartTpsInstance.destroy();
+            chartTpsInstance = new Chart(ctxTps, {
+                type: 'doughnut',
+                data: {
+                    labels: Object.keys(tpsCounts),
+                    datasets: [{
+                        data: Object.values(tpsCounts),
+                        backgroundColor: ['#0284c7', '#10b981', '#f59e0b', '#d946ef', '#6366f1', '#06b6d4']
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { position: 'bottom', labels: { color: '#64748b' } } }
+                }
+            });
+        }
+
+        // Export Data to CSV
+        function exportToCSV() {
+            if (filteredData.length === 0) {
+                showCustomAlert('Export Gagal', 'Tidak ada data untuk diexport!');
+                return;
+            }
+
+            const headers = ['NO. DPT', 'NAMA PEMILIH', 'RT DOMISILI', 'TPS', 'NKK', 'NO URUT KK'];
+            const rows = filteredData.map(d => [d.noDpt, `"${d.nama}"`, d.rtDomisili, d.tps, `"${d.nkk}"`, d.noUrutKk]);
+
+            const csvContent = "data:text/csv;charset=utf-8," + [headers.join(','), ...rows.map(e => e.join(','))].join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `DPT_TPS_01_${new Date().toISOString().slice(0, 10)}.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        // Switch Navigation Tabs
+        function switchTab(tab) {
+            ['dashboard', 'analytics', 'rekap-tps', 'rekap-rt'].forEach(t => {
+                document.getElementById(`tab-${t}`).classList.add('hidden');
+                const navBtn = document.getElementById(`nav-${t}`);
+                navBtn.classList.remove('sidebar-item-active');
+                navBtn.style.color = 'var(--text-muted)';
+            });
+
+            document.getElementById(`tab-${tab}`).classList.remove('hidden');
+            const activeNav = document.getElementById(`nav-${tab}`);
+            activeNav.classList.add('sidebar-item-active');
+            activeNav.style.color = '#ffffff';
+
+            if (tab === 'analytics') {
+                renderCharts();
+            }
+
+            if (window.innerWidth < 768) {
+                toggleSidebar();
+            }
+        }
+
+        // Modal Form Handlers
+        function openModal(editData = null) {
+            document.getElementById('modal-form').classList.remove('hidden');
+            document.getElementById('modal-title').innerText = editData ? 'Edit Data Warga' : 'Tambah Data Warga';
+            document.getElementById('field-id').value = editData ? editData.id : '';
+            document.getElementById('field-noDpt').value = editData ? editData.noDpt : '';
+            document.getElementById('field-nama').value = editData ? editData.nama : '';
+            document.getElementById('field-rtDomisili').value = editData ? editData.rtDomisili : '';
+            document.getElementById('field-tps').value = editData ? editData.tps : '';
+            document.getElementById('field-nkk').value = editData ? editData.nkk : '';
+            document.getElementById('field-noUrutKk').value = editData ? editData.noUrutKk : '';
+        }
+
+        function closeModal() {
+            document.getElementById('modal-form').classList.add('hidden');
+            document.getElementById('warga-form').reset();
+        }
+
+        function editWarga(id) {
+            const item = rawData.find(d => String(d.id) === String(id));
+            if (item) openModal(item);
+        }
+
+        async function saveData(event) {
+            event.preventDefault();
+            const id = document.getElementById('field-id').value;
+            const action = id ? 'UPDATE' : 'CREATE';
+            
+            const payload = {
+                id: id || String(Date.now()),
+                noDpt: document.getElementById('field-noDpt').value,
+                nama: document.getElementById('field-nama').value,
+                rtDomisili: document.getElementById('field-rtDomisili').value,
+                tps: document.getElementById('field-tps').value,
+                nkk: document.getElementById('field-nkk').value,
+                noUrutKk: document.getElementById('field-noUrutKk').value
+            };
+
+            closeModal();
+            setStatus('MENYIMPAN...', 'syncing');
+
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ action, payload })
+                });
+                const result = await res.json();
+                if (result.status === 'success') {
+                    await fetchDataFromSheet();
+                } else {
+                    saveLocalFallback(payload);
+                }
+            } catch (err) {
+                console.warn('Fallback ke save lokal:', err);
+                saveLocalFallback(payload);
+            }
+        }
+
+        function saveLocalFallback(payload) {
+            const idx = rawData.findIndex(d => String(d.id) === String(payload.id));
+            if (idx >= 0) rawData[idx] = payload;
+            else rawData.unshift(payload);
+            filteredData = [...rawData];
+            populateFilterDropdowns();
+            renderAll();
+            setStatus('ONLINE', 'online');
+        }
+
+        async function deleteWarga(id) {
+            showCustomAlert('Konfirmasi Hapus', 'Apakah Anda yakin ingin menghapus data warga ini?', true, async () => {
+                setStatus('MENGHAPUS...', 'syncing');
+                try {
+                    const res = await fetch(API_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'DELETE', payload: { id } })
+                    });
+                    const result = await res.json();
+                    if (result.status === 'success') {
+                        await fetchDataFromSheet();
+                    } else {
+                        deleteLocalFallback(id);
+                    }
+                } catch (err) {
+                    deleteLocalFallback(id);
+                }
+            });
+        }
+
+        function deleteLocalFallback(id) {
+            rawData = rawData.filter(d => String(d.id) !== String(id));
+            filteredData = [...rawData];
+            populateFilterDropdowns();
+            renderAll();
+            setStatus('ONLINE', 'online');
+        }
+
+        // Custom Modal Alert Logic
+        function showCustomAlert(title, message, isConfirm = false, onConfirm = null) {
+            document.getElementById('custom-modal-title').innerText = title;
+            document.getElementById('custom-modal-message').innerText = message;
+            const actions = document.getElementById('custom-modal-actions');
+            
+            if (isConfirm) {
+                actions.innerHTML = `
+                    <button onclick="closeCustomModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border" style="border-color: var(--border-color); color: var(--text-muted);">Batal</button>
+                    <button id="custom-confirm-btn" class="px-4 py-2 rounded-xl text-xs font-bold bg-red-500 hover:bg-red-600 text-white shadow-lg">Ya, Hapus</button>
+                `;
+                document.getElementById('custom-confirm-btn').onclick = () => {
+                    closeCustomModal();
+                    if (onConfirm) onConfirm();
+                };
+            } else {
+                actions.innerHTML = `<button onclick="closeCustomModal()" class="btn-accent px-5 py-2 rounded-xl text-xs font-bold">OK</button>`;
+            }
+            document.getElementById('custom-modal').classList.remove('hidden');
+        }
+
+        function closeCustomModal() {
+            document.getElementById('custom-modal').classList.add('hidden');
+        }
+    </script>
+</body>
+</html>
