@@ -2,7 +2,7 @@
 <html lang="id" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Dashboard Warga & DPT - TPS 01</title>
     
     <!-- External Dependencies -->
@@ -107,6 +107,63 @@
             background-color: var(--bg-main);
             color: var(--text-main);
             transition: background-color 0.4s ease, color 0.4s ease;
+            overflow-x: hidden;
+        }
+
+        /* Responsive Mobile Layout Strategy for Tables */
+        @media (max-width: 639px) {
+            .mobile-table-card table, 
+            .mobile-table-card thead, 
+            .mobile-table-card tbody, 
+            .mobile-table-card th, 
+            .mobile-table-card td, 
+            .mobile-table-card tr { 
+                display: block; 
+            }
+            .mobile-table-card thead tr { 
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            .mobile-table-card tr {
+                border: 1px solid var(--border-color);
+                border-radius: 1rem;
+                padding: 12px;
+                margin-bottom: 12px;
+                background-color: var(--bg-surface);
+            }
+            .mobile-table-card td { 
+                border: none !important;
+                position: relative;
+                padding-left: 45% !important;
+                padding-top: 6px !important;
+                padding-bottom: 6px !important;
+                text-align: left !important;
+            }
+            .mobile-table-card td:before { 
+                position: absolute;
+                top: 6px;
+                left: 10px;
+                width: 40%; 
+                padding-right: 10px; 
+                white-space: nowrap;
+                font-weight: 700;
+                font-size: 10px;
+                color: var(--text-muted);
+                text-transform: uppercase;
+                content: attr(data-label);
+            }
+            .mobile-table-card td.mobile-actions {
+                padding-left: 0 !important;
+                margin-top: 8px;
+                padding-top: 8px !important;
+                border-t: 1px dashed var(--border-color) !important;
+                display: flex;
+                justify-content: flex-end;
+            }
+            .mobile-table-card td.mobile-actions:before {
+                content: "";
+            }
         }
 
         /* Glassmorphism Effect */
@@ -166,7 +223,7 @@
         }
     </style>
 </head>
-<body data-theme="cyber" class="h-full flex flex-col overflow-hidden text-sm">
+<body data-theme="cyber" class="h-full flex flex-col overflow-x-hidden text-sm">
 
     <!-- API CONFIGURATION: TEMPELKAN URL WEB APP APPS SCRIPT ANDA DI SINI -->
     <script>
@@ -174,43 +231,42 @@
     </script>
 
     <!-- Top Navigation Header -->
-    <header class="glass-panel sticky top-0 z-40 px-4 py-3 flex items-center justify-between border-b">
-        <div class="flex items-center space-x-3">
-            <button onclick="toggleSidebar()" class="p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-600 focus:outline-none" title="Toggle Sidebar">
-                <i class="fa-solid fa-atom text-xl" style="color: var(--accent-color);"></i>
+    <header class="glass-panel sticky top-0 z-40 px-3 md:px-4 py-2.5 md:py-3 flex items-center justify-between border-b max-w-full">
+        <div class="flex items-center space-x-2 md:space-x-3">
+            <button onclick="toggleSidebar()" class="p-1.5 md:p-2 rounded-xl hover:bg-slate-100 transition-colors text-slate-600 focus:outline-none" title="Toggle Sidebar">
+                <i class="fa-solid fa-atom text-lg md:text-xl" style="color: var(--accent-color);"></i>
             </button>
-            <div class="flex items-center space-x-3">
-                <div class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-white shadow-glow-sm" style="background: var(--gradient-accent);">
-                    <i class="fa-solid fa-microchip text-sm"></i>
+            <div class="flex items-center space-x-2 md:space-x-3">
+                <div class="w-8 h-8 md:w-9 md:h-9 rounded-xl flex items-center justify-center font-bold text-white shadow-glow-sm" style="background: var(--gradient-accent);">
+                    <i class="fa-solid fa-microchip text-xs md:text-sm"></i>
                 </div>
                 <div>
-                    <h1 class="font-cyber font-bold tracking-wide text-base leading-tight">Data <span style="color: var(--accent-color);">TPS 01</span></h1>
-                    <p class="text-[10px] tracking-wider uppercase opacity-80 font-semibold" style="color: var(--text-muted);">Manajemen Data Pemilih DPT</p>
+                    <h1 class="font-cyber font-bold tracking-wide text-sm md:text-base leading-tight">Data <span style="color: var(--accent-color);">TPS 01</span></h1>
+                    <p class="text-[9px] md:text-[10px] tracking-wider uppercase opacity-80 font-semibold" style="color: var(--text-muted);">DPT TPS 01</p>
                 </div>
             </div>
         </div>
 
         <!-- Header Controls -->
-        <div class="flex items-center space-x-3">
+        <div class="flex items-center space-x-1.5 md:space-x-3">
             <!-- Theme Dropdown -->
             <div class="relative">
-                <select id="theme-selector" onchange="changeTheme(this.value)" class="px-3 py-1.5 rounded-xl text-xs font-semibold focus:outline-none cursor-pointer transition-all border appearance-none pr-8 shadow-sm" style="background-color: var(--bg-surface); color: var(--text-main); border-color: var(--border-color);">
-                    <option value="cyber">☀️ White Quantum</option>
-                    <option value="neon">⚡ Neon Light</option>
-                    <option value="emerald">🌿 Mint Breeze</option>
-                    <option value="sunset">🌅 Warm Sunset</option>
+                <select id="theme-selector" onchange="changeTheme(this.value)" class="pl-2 pr-6 py-1.5 rounded-xl text-[11px] md:text-xs font-semibold focus:outline-none cursor-pointer transition-all border appearance-none shadow-sm" style="background-color: var(--bg-surface); color: var(--text-main); border-color: var(--border-color);">
+                    <option value="cyber">☀️ White</option>
+                    <option value="neon">⚡ Neon</option>
+                    <option value="emerald">🌿 Mint</option>
+                    <option value="sunset">🌅 Sunset</option>
                 </select>
-                <i class="fa-solid fa-chevron-down text-[10px] absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none opacity-60"></i>
+                <i class="fa-solid fa-chevron-down text-[9px] absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none opacity-60"></i>
             </div>
 
             <!-- Online Sync Status Indicator -->
-            <div class="flex items-center space-x-2 px-3 py-1.5 rounded-xl text-xs font-medium border shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+            <div class="flex items-center space-x-1.5 px-2 md:px-3 py-1.5 rounded-xl text-[11px] md:text-xs font-medium border shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
                 <span class="relative flex h-2 w-2">
                     <span id="sync-ping" class="animate-ping absolute inline-flex h-full w-full rounded-full opacity-75" style="background-color: var(--accent-color);"></span>
                     <span id="sync-dot" class="relative inline-flex rounded-full h-2 w-2" style="background-color: var(--accent-color);"></span>
                 </span>
-                <span class="hidden sm:inline text-slate-500 font-medium">Status:</span>
-                <span id="sync-status" class="font-cyber font-bold tracking-wider text-[11px]" style="color: var(--accent-color);">ONLINE</span>
+                <span id="sync-status" class="font-cyber font-bold tracking-wider text-[10px] md:text-[11px]" style="color: var(--accent-color);">ONLINE</span>
             </div>
         </div>
     </header>
@@ -219,7 +275,7 @@
     <div id="sidebar-backdrop" onclick="toggleSidebar()" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-40 hidden md:hidden transition-opacity"></div>
 
     <!-- Main Container -->
-    <div class="flex flex-1 h-[calc(100vh-61px)] overflow-hidden">
+    <div class="flex flex-1 h-[calc(100vh-57px)] md:h-[calc(100vh-61px)] overflow-hidden">
         
         <!-- Sidebar Navigation -->
         <aside id="sidebar" class="sidebar-panel w-64 flex-shrink-0 flex flex-col transition-all duration-300 ease-in-out absolute md:relative inset-y-0 left-0 z-50 transform -translate-x-full md:translate-x-0 border-r">
@@ -264,87 +320,87 @@
         </aside>
 
         <!-- Main Body Workspace -->
-        <main class="flex-1 overflow-y-auto p-4 md:p-6 space-y-6">
+        <main class="flex-1 overflow-y-auto p-3 md:p-6 space-y-4 md:space-y-6 max-w-full">
             
             <!-- TAB 1: DASHBOARD & DPT DATA -->
-            <div id="tab-dashboard" class="space-y-6">
+            <div id="tab-dashboard" class="space-y-4 md:space-y-6">
                 
                 <!-- Action Header Bar -->
-                <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                     <div>
-                        <h2 class="text-2xl md:text-3xl font-extrabold font-cyber tracking-tight">Dashboard Data Warga & DPT</h2>
-                        <p class="text-xs md:text-sm mt-0.5" style="color: var(--text-muted);">Manajemen terintegrasi DPT, pemetaan RT, TPS, serta grouping KK.</p>
+                        <h2 class="text-xl md:text-3xl font-extrabold font-cyber tracking-tight">Dashboard DPT</h2>
+                        <p class="text-xs mt-0.5" style="color: var(--text-muted);">Manajemen terintegrasi DPT, pemetaan RT, TPS, & KK.</p>
                     </div>
                     <div class="flex flex-wrap items-center gap-2">
-                        <button onclick="exportToCSV()" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all border hover:bg-slate-100 shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                        <button onclick="exportToCSV()" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all border hover:bg-slate-100 shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
                             <i class="fa-solid fa-file-export text-emerald-600"></i>
                             <span>Export CSV</span>
                         </button>
-                        <button onclick="fetchDataFromSheet()" class="px-3.5 py-2.5 rounded-xl text-xs font-semibold flex items-center space-x-2 transition-all border hover:bg-slate-100 shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
+                        <button onclick="fetchDataFromSheet()" class="flex-1 sm:flex-none px-3 py-2 rounded-xl text-xs font-semibold flex items-center justify-center space-x-1.5 transition-all border hover:bg-slate-100 shadow-sm" style="background-color: var(--bg-surface); border-color: var(--border-color);">
                             <i class="fa-solid fa-arrows-rotate" id="refresh-icon"></i>
                             <span>Refresh</span>
                         </button>
-                        <button onclick="openModal()" class="btn-accent px-4 py-2.5 rounded-xl text-xs font-bold flex items-center space-x-2 transition-all">
-                            <i class="fa-solid fa-user-gear"></i>
+                        <button onclick="openModal()" class="w-full sm:w-auto btn-accent px-4 py-2 rounded-xl text-xs font-bold flex items-center justify-center space-x-2 transition-all">
+                            <i class="fa-solid fa-user-plus"></i>
                             <span>Tambah Warga</span>
                         </button>
                     </div>
                 </div>
 
                 <!-- Strategic Summary KPI Cards -->
-                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-2.5 md:gap-4">
                     <!-- KPI 1 -->
-                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                    <div class="glass-panel glass-panel-hover p-3 md:p-4 rounded-2xl transition-all relative overflow-hidden group">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Total Pemilih DPT</span>
-                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs" style="background-color: var(--badge-bg); color: var(--accent-color);">
+                            <span class="text-[10px] md:text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Total Pemilih</span>
+                            <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-xs" style="background-color: var(--badge-bg); color: var(--accent-color);">
                                 <i class="fa-solid fa-users-rays"></i>
                             </div>
                         </div>
-                        <div id="kpi-total" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight">0</div>
-                        <p class="text-[10px] mt-1 text-slate-500"><span id="kpi-total-sub" class="text-emerald-600 font-bold">100%</span> terdaftar di sistem</p>
+                        <div id="kpi-total" class="text-xl md:text-3xl font-extrabold mt-2 md:mt-3 font-cyber tracking-tight">0</div>
+                        <p class="text-[9px] md:text-[10px] mt-0.5 md:mt-1 text-slate-500"><span id="kpi-total-sub" class="text-emerald-600 font-bold">100%</span> terdaftar</p>
                     </div>
 
                     <!-- KPI 2 -->
-                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                    <div class="glass-panel glass-panel-hover p-3 md:p-4 rounded-2xl transition-all relative overflow-hidden group">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Total RT Domisili</span>
-                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs bg-cyan-500/10 text-cyan-600">
+                            <span class="text-[10px] md:text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Total RT</span>
+                            <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-xs bg-cyan-500/10 text-cyan-600">
                                 <i class="fa-solid fa-city"></i>
                             </div>
                         </div>
-                        <div id="kpi-rt" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight text-cyan-600">0</div>
-                        <p class="text-[10px] mt-1 text-slate-500">Cakupan Wilayah</p>
+                        <div id="kpi-rt" class="text-xl md:text-3xl font-extrabold mt-2 md:mt-3 font-cyber tracking-tight text-cyan-600">0</div>
+                        <p class="text-[9px] md:text-[10px] mt-0.5 md:mt-1 text-slate-500">Cakupan Wilayah</p>
                     </div>
 
                     <!-- KPI 3 -->
-                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                    <div class="glass-panel glass-panel-hover p-3 md:p-4 rounded-2xl transition-all relative overflow-hidden group">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Jumlah TPS Active</span>
-                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs bg-emerald-500/10 text-emerald-600">
+                            <span class="text-[10px] md:text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Jumlah TPS</span>
+                            <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-xs bg-emerald-500/10 text-emerald-600">
                                 <i class="fa-solid fa-cubes-stacked"></i>
                             </div>
                         </div>
-                        <div id="kpi-tps" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight text-emerald-600">0</div>
-                        <p class="text-[10px] mt-1 text-slate-500">Titik Pencoblosan</p>
+                        <div id="kpi-tps" class="text-xl md:text-3xl font-extrabold mt-2 md:mt-3 font-cyber tracking-tight text-emerald-600">0</div>
+                        <p class="text-[9px] md:text-[10px] mt-0.5 md:mt-1 text-slate-500">Titik Pencoblosan</p>
                     </div>
 
                     <!-- KPI 4 -->
-                    <div class="glass-panel glass-panel-hover p-4 rounded-2xl transition-all relative overflow-hidden group">
+                    <div class="glass-panel glass-panel-hover p-3 md:p-4 rounded-2xl transition-all relative overflow-hidden group">
                         <div class="flex items-center justify-between">
-                            <span class="text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Kepala Keluarga (NKK)</span>
-                            <div class="w-8 h-8 rounded-xl flex items-center justify-center text-xs bg-amber-500/10 text-amber-600">
+                            <span class="text-[10px] md:text-[11px] font-cyber uppercase tracking-wider font-bold opacity-80" style="color: var(--text-muted);">Kepala Keluarga</span>
+                            <div class="w-7 h-7 md:w-8 md:h-8 rounded-xl flex items-center justify-center text-xs bg-amber-500/10 text-amber-600">
                                 <i class="fa-solid fa-id-card-clip"></i>
                             </div>
                         </div>
-                        <div id="kpi-kk" class="text-2xl md:text-3xl font-extrabold mt-3 font-cyber tracking-tight text-amber-600">0</div>
-                        <p class="text-[10px] mt-1 text-slate-500">Kartu Keluarga Unik</p>
+                        <div id="kpi-kk" class="text-xl md:text-3xl font-extrabold mt-2 md:mt-3 font-cyber tracking-tight text-amber-600">0</div>
+                        <p class="text-[9px] md:text-[10px] mt-0.5 md:mt-1 text-slate-500">Kartu Keluarga Unik</p>
                     </div>
                 </div>
 
                 <!-- Dynamic Search & Filter Controls -->
-                <div class="glass-panel p-4 rounded-2xl space-y-3">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3">
+                <div class="glass-panel p-3 md:p-4 rounded-2xl space-y-3">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-2.5">
                         <!-- Search Field -->
                         <div class="lg:col-span-2 relative">
                             <i class="fa-solid fa-magnifying-glass-chart absolute left-3.5 top-1/2 -translate-y-1/2 text-xs opacity-50"></i>
@@ -378,17 +434,17 @@
 
                     <!-- Reset & Active Filter Banner -->
                     <div class="flex items-center justify-between text-xs pt-2 border-t border-slate-200">
-                        <span class="text-slate-500 font-medium text-[11px]" id="filter-info-count">Menampilkan 0 data</span>
-                        <button onclick="resetFilters()" class="font-bold transition-colors hover:underline text-[11px] flex items-center space-x-1" style="color: var(--accent-color);">
+                        <span class="text-slate-500 font-medium text-[10px] md:text-[11px]" id="filter-info-count">Menampilkan 0 data</span>
+                        <button onclick="resetFilters()" class="font-bold transition-colors hover:underline text-[10px] md:text-[11px] flex items-center space-x-1" style="color: var(--accent-color);">
                             <i class="fa-solid fa-[#0284c7] fa-filter-circle-xmark"></i>
                             <span>Reset All Filters</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- Primary Data Table -->
-                <div class="glass-panel rounded-2xl overflow-hidden border">
-                    <div class="overflow-x-auto">
+                <!-- Primary Data Table (Transformed to Mobile Responsive Cards on Phone View) -->
+                <div class="glass-panel rounded-2xl overflow-hidden border mobile-table-card">
+                    <div class="w-full">
                         <table class="w-full text-left text-xs">
                             <thead class="uppercase text-[10px] font-cyber tracking-wider border-b bg-slate-50 border-slate-200" style="color: var(--text-muted);">
                                 <tr>
@@ -409,7 +465,7 @@
 
                     <!-- Table Pagination Footer -->
                     <div class="px-4 py-3 border-t border-slate-200 bg-slate-50 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
-                        <div class="flex items-center space-x-2">
+                        <div class="flex items-center justify-between w-full sm:w-auto space-x-2">
                             <span class="text-slate-500 text-[11px] font-medium">Baris per halaman:</span>
                             <select id="rows-per-page" onchange="changePageSize(this.value)" class="px-2 py-1 rounded-lg text-xs focus:outline-none border border-slate-300" style="background-color: var(--bg-main);">
                                 <option value="10">10</option>
@@ -419,7 +475,7 @@
                             </select>
                         </div>
 
-                        <div class="flex items-center space-x-3">
+                        <div class="flex items-center justify-between w-full sm:w-auto space-x-3">
                             <span id="pagination-info" class="text-slate-500 text-[11px] font-medium">Halaman 1 dari 1</span>
                             <div class="inline-flex space-x-1">
                                 <button onclick="prevPage()" id="btn-prev-page" class="px-2.5 py-1 rounded-lg border border-slate-300 hover:bg-slate-100 disabled:opacity-30 disabled:cursor-not-allowed">
@@ -435,25 +491,25 @@
             </div>
 
             <!-- TAB 2: VISUAL ANALYTICS -->
-            <div id="tab-analytics" class="space-y-6 hidden">
-                <h2 class="text-2xl md:text-3xl font-bold font-cyber">Visual Analytics Data DPT</h2>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                    <div class="glass-panel p-5 rounded-2xl border space-y-4">
-                        <h3 class="font-cyber font-semibold text-sm flex items-center gap-2">
+            <div id="tab-analytics" class="space-y-4 md:space-y-6 hidden">
+                <h2 class="text-xl md:text-3xl font-bold font-cyber">Visual Analytics DPT</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+                    <div class="glass-panel p-4 md:p-5 rounded-2xl border space-y-4">
+                        <h3 class="font-cyber font-semibold text-xs md:text-sm flex items-center gap-2">
                             <i class="fa-solid fa-chart-simple" style="color: var(--accent-color);"></i>
                             Distribusi Pemilih per RT Domisili
                         </h3>
-                        <div class="h-64 relative">
+                        <div class="h-56 md:h-64 relative">
                             <canvas id="chart-rt"></canvas>
                         </div>
                     </div>
 
-                    <div class="glass-panel p-5 rounded-2xl border space-y-4">
-                        <h3 class="font-cyber font-semibold text-sm flex items-center gap-2">
+                    <div class="glass-panel p-4 md:p-5 rounded-2xl border space-y-4">
+                        <h3 class="font-cyber font-semibold text-xs md:text-sm flex items-center gap-2">
                             <i class="fa-solid fa-chart-pie-simple" style="color: var(--accent-color);"></i>
                             Sebaran Pemilih per TPS
                         </h3>
-                        <div class="h-64 relative">
+                        <div class="h-56 md:h-64 relative">
                             <canvas id="chart-tps"></canvas>
                         </div>
                     </div>
@@ -461,20 +517,20 @@
             </div>
 
             <!-- TAB 3: REKAPITULASI TPS -->
-            <div id="tab-rekap-tps" class="space-y-6 hidden">
+            <div id="tab-rekap-tps" class="space-y-4 md:space-y-6 hidden">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-2xl md:text-3xl font-bold font-cyber">Rekapitulasi TPS</h2>
-                    <span class="text-xs px-3 py-1 rounded-full border border-sky-300 bg-sky-50 text-sky-700 font-semibold">Grouping TPS</span>
+                    <h2 class="text-xl md:text-3xl font-bold font-cyber">Rekap TPS</h2>
+                    <span class="text-[10px] md:text-xs px-2.5 py-1 rounded-full border border-sky-300 bg-sky-50 text-sky-700 font-semibold">Grouping TPS</span>
                 </div>
                 
-                <div class="glass-panel rounded-2xl shadow-sm overflow-hidden border">
+                <div class="glass-panel rounded-2xl shadow-sm overflow-hidden border mobile-table-card">
                     <table class="w-full text-left text-xs">
                         <thead class="uppercase text-[10px] font-cyber tracking-wider border-b bg-slate-50 border-slate-200" style="color: var(--text-muted);">
                             <tr>
-                                <th class="p-4">TPS</th>
-                                <th class="p-4">JUMLAH PEMILIH DPT</th>
-                                <th class="p-4">JUMLAH NO. URUT KK UNIK</th>
-                                <th class="p-4">CAKUPAN RT TERLIBAT</th>
+                                <th class="p-3.5">TPS</th>
+                                <th class="p-3.5">JUMLAH PEMILIH</th>
+                                <th class="p-3.5">JUMLAH KK UNIK</th>
+                                <th class="p-3.5">CAKUPAN RT</th>
                             </tr>
                         </thead>
                         <tbody id="table-rekap-tps-body" class="divide-y divide-slate-200">
@@ -485,19 +541,19 @@
             </div>
 
             <!-- TAB 4: WILAYAH & REKAP RT -->
-            <div id="tab-rekap-rt" class="space-y-6 hidden">
+            <div id="tab-rekap-rt" class="space-y-4 md:space-y-6 hidden">
                 <div class="flex justify-between items-center">
-                    <h2 class="text-2xl md:text-3xl font-bold font-cyber">Rekapitulasi Wilayah RT</h2>
-                    <span class="text-xs px-3 py-1 rounded-full border border-sky-300 bg-sky-50 text-sky-700 font-semibold">Grouping RT</span>
+                    <h2 class="text-xl md:text-3xl font-bold font-cyber">Rekap Wilayah RT</h2>
+                    <span class="text-[10px] md:text-xs px-2.5 py-1 rounded-full border border-sky-300 bg-sky-50 text-sky-700 font-semibold">Grouping RT</span>
                 </div>
 
-                <div class="glass-panel rounded-2xl shadow-sm overflow-hidden border">
+                <div class="glass-panel rounded-2xl shadow-sm overflow-hidden border mobile-table-card">
                     <table class="w-full text-left text-xs">
                         <thead class="uppercase text-[10px] font-cyber tracking-wider border-b bg-slate-50 border-slate-200" style="color: var(--text-muted);">
                             <tr>
-                                <th class="p-4">RT DOMISILI</th>
-                                <th class="p-4">JUMLAH PEMILIH DPT</th>
-                                <th class="p-4">JUMLAH NO. URUT KK UNIK</th>
+                                <th class="p-3.5">RT DOMISILI</th>
+                                <th class="p-3.5">JUMLAH PEMILIH</th>
+                                <th class="p-3.5">JUMLAH KK UNIK</th>
                             </tr>
                         </thead>
                         <tbody id="table-rekap-rt-body" class="divide-y divide-slate-200">
@@ -511,19 +567,19 @@
     </div>
 
     <!-- Modal Form Editor Warga -->
-    <div id="modal-form" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md hidden flex items-center justify-center p-4 z-50 transition-opacity">
-        <div class="glass-panel rounded-2xl w-full max-w-md p-6 space-y-4 border shadow-2xl relative" style="background-color: var(--bg-surface);">
+    <div id="modal-form" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md hidden flex items-center justify-center p-3 md:p-4 z-50 transition-opacity overflow-y-auto">
+        <div class="glass-panel rounded-2xl w-full max-w-md p-5 md:p-6 space-y-4 border shadow-2xl relative my-auto" style="background-color: var(--bg-surface);">
             <div class="flex items-center justify-between border-b border-slate-200 pb-3">
-                <h3 id="modal-title" class="text-base font-bold font-cyber flex items-center gap-2">
+                <h3 id="modal-title" class="text-sm md:text-base font-bold font-cyber flex items-center gap-2">
                     <i class="fa-solid fa-user-pen text-sm" style="color: var(--accent-color);"></i>
                     <span>Tambah Data Warga</span>
                 </h3>
-                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700">
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-700 p-1">
                     <i class="fa-solid fa-xmark text-lg"></i>
                 </button>
             </div>
 
-            <form id="warga-form" onsubmit="saveData(event)" class="space-y-3.5">
+            <form id="warga-form" onsubmit="saveData(event)" class="space-y-3">
                 <input type="hidden" id="field-id">
                 
                 <div>
@@ -559,7 +615,7 @@
                 </div>
 
                 <div class="flex justify-end space-x-2 pt-3 border-t border-slate-200">
-                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border border-slate-300 hover:bg-slate-100 transition-all" style="color: var(--text-muted);">Batal</button>
+                    <button type="button" onclick="closeModal()" class="px-4 py-2 rounded-xl text-xs font-semibold border hover:bg-slate-100 transition-all" style="border-color: var(--border-color); color: var(--text-muted);">Batal</button>
                     <button type="submit" id="btn-submit" class="btn-accent px-5 py-2 rounded-xl text-xs font-bold transition-all">Simpan Data</button>
                 </div>
             </form>
@@ -568,7 +624,7 @@
 
     <!-- Custom Modal Confirm Alert Dialog -->
     <div id="custom-modal" class="fixed inset-0 bg-slate-900/50 backdrop-blur-md hidden flex items-center justify-center p-4 z-50">
-        <div class="glass-panel rounded-2xl w-full max-w-sm p-6 space-y-4 border text-center shadow-2xl" style="background-color: var(--bg-surface);">
+        <div class="glass-panel rounded-2xl w-full max-w-sm p-5 md:p-6 space-y-4 border text-center shadow-2xl" style="background-color: var(--bg-surface);">
             <div id="custom-modal-icon" class="w-12 h-12 rounded-2xl mx-auto flex items-center justify-center text-xl bg-amber-500/10 text-amber-600">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
@@ -737,7 +793,7 @@
             renderCharts();
         }
 
-        // Render Table Data with Grouping & Pagination
+        // Render Table Data with Grouping & Mobile Data Label Attributes
         function renderTable() {
             const tbody = document.getElementById('table-body');
             const totalRecords = filteredData.length;
@@ -749,7 +805,7 @@
                     <tr>
                         <td colspan="7" class="p-8 text-center text-slate-400">
                             <i class="fa-solid fa-box-open text-2xl mb-2 block opacity-40"></i>
-                            Tidak ada data DPT yang cocok dengan kriteria pencarian/filter.
+                            Tidak ada data DPT yang cocok dengan pencarian/filter.
                         </td>
                     </tr>
                 `;
@@ -770,30 +826,30 @@
 
                 return `
                     <tr class="${borderClass} transition-colors hover:bg-slate-100/60">
-                        <td class="p-3.5 font-bold font-cyber" style="color: var(--accent-color);">${item.noDpt}</td>
-                        <td class="p-3.5 font-semibold text-slate-800">${item.nama}</td>
-                        <td class="p-3.5">
+                        <td data-label="NO. DPT" class="p-3 font-bold font-cyber" style="color: var(--accent-color);">${item.noDpt}</td>
+                        <td data-label="NAMA PEMILIH" class="p-3 font-semibold text-slate-800">${item.nama}</td>
+                        <td data-label="RT DOMISILI" class="p-3">
                             <span class="px-2 py-0.5 rounded-md font-mono text-[11px] border border-slate-200 bg-slate-100 text-slate-700">
                                 RT ${item.rtDomisili}
                             </span>
                         </td>
-                        <td class="p-3.5">
+                        <td data-label="TPS" class="p-3">
                             <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase border bg-emerald-50 text-emerald-700 border-emerald-200">
                                 TPS ${item.tps}
                             </span>
                         </td>
-                        <td class="p-3.5 font-mono text-slate-600">${item.nkk}</td>
-                        <td class="p-3.5">
+                        <td data-label="NKK (NO. KK)" class="p-3 font-mono text-slate-600">${item.nkk}</td>
+                        <td data-label="NO. URUT KK" class="p-3">
                             <span class="px-2 py-0.5 rounded-md font-mono text-[11px] bg-amber-50 text-amber-700 border border-amber-200">
                                 No ${item.noUrutKk}
                             </span>
                         </td>
-                        <td class="p-3.5 text-center space-x-2">
-                            <button onclick="editWarga('${item.id}')" class="p-1.5 rounded-lg hover:bg-sky-100 text-sky-600 transition-colors" title="Edit Data">
-                                <i class="fa-solid fa-pen-nib"></i>
+                        <td data-label="AKSI" class="p-3 text-center space-x-2 mobile-actions">
+                            <button onclick="editWarga('${item.id}')" class="p-1.5 rounded-lg bg-sky-50 hover:bg-sky-100 text-sky-600 transition-colors border border-sky-200" title="Edit Data">
+                                <i class="fa-solid fa-pen-nib"></i> <span class="sm:hidden text-[11px] font-medium ml-1">Edit</span>
                             </button>
-                            <button onclick="deleteWarga('${item.id}')" class="p-1.5 rounded-lg hover:bg-red-100 text-red-600 transition-colors" title="Hapus Data">
-                                <i class="fa-solid fa-trash-can"></i>
+                            <button onclick="deleteWarga('${item.id}')" class="p-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-600 transition-colors border border-red-200" title="Hapus Data">
+                                <i class="fa-solid fa-trash-can"></i> <span class="sm:hidden text-[11px] font-medium ml-1">Hapus</span>
                             </button>
                         </td>
                     </tr>
@@ -807,7 +863,7 @@
         function updatePaginationUI(page, totalPages, totalRecords) {
             document.getElementById('pagination-info').innerText = totalRecords === 0 
                 ? 'Tidak ada data' 
-                : `Halaman ${page} dari ${totalPages} (${totalRecords} baris)`;
+                : `Hal ${page} / ${totalPages} (${totalRecords} data)`;
 
             document.getElementById('btn-prev-page').disabled = page <= 1;
             document.getElementById('btn-next-page').disabled = page >= totalPages || totalPages === 0;
@@ -855,10 +911,10 @@
             const tbody = document.getElementById('table-rekap-tps-body');
             tbody.innerHTML = Object.keys(tpsMap).sort().map(tps => `
                 <tr class="transition-colors hover:bg-slate-100/60">
-                    <td class="p-4 font-bold font-cyber text-emerald-600">TPS ${tps}</td>
-                    <td class="p-4 font-semibold text-slate-800">${tpsMap[tps].total} Pemilih</td>
-                    <td class="p-4">${tpsMap[tps].kks.size} NO URUT KK Unik</td>
-                    <td class="p-4 text-slate-600">${Array.from(tpsMap[tps].rts).map(r => `RT ${r}`).join(', ')}</td>
+                    <td data-label="TPS" class="p-3.5 font-bold font-cyber text-emerald-600">TPS ${tps}</td>
+                    <td data-label="JUMLAH PEMILIH" class="p-3.5 font-semibold text-slate-800">${tpsMap[tps].total} Pemilih</td>
+                    <td data-label="JUMLAH KK UNIK" class="p-3.5">${tpsMap[tps].kks.size} NO URUT KK Unik</td>
+                    <td data-label="CAKUPAN RT" class="p-3.5 text-slate-600">${Array.from(tpsMap[tps].rts).map(r => `RT ${r}`).join(', ')}</td>
                 </tr>
             `).join('');
         }
@@ -875,9 +931,9 @@
             const tbody = document.getElementById('table-rekap-rt-body');
             tbody.innerHTML = Object.keys(rtMap).sort().map(rt => `
                 <tr class="transition-colors hover:bg-slate-100/60">
-                    <td class="p-4 font-bold font-cyber text-cyan-600">RT ${rt}</td>
-                    <td class="p-4 font-semibold text-slate-800">${rtMap[rt].total} Pemilih</td>
-                    <td class="p-4">${rtMap[rt].kks.size} NO URUT KK Unik</td>
+                    <td data-label="RT DOMISILI" class="p-3.5 font-bold font-cyber text-cyan-600">RT ${rt}</td>
+                    <td data-label="JUMLAH PEMILIH" class="p-3.5 font-semibold text-slate-800">${rtMap[rt].total} Pemilih</td>
+                    <td data-label="JUMLAH KK UNIK" class="p-3.5">${rtMap[rt].kks.size} NO URUT KK Unik</td>
                 </tr>
             `).join('');
         }
@@ -934,7 +990,7 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { position: 'bottom', labels: { color: '#64748b' } } }
+                    plugins: { legend: { position: 'bottom', labels: { color: '#64748b', boxWidth: 12 } } }
                 }
             });
         }
